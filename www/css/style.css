@@ -1,0 +1,92 @@
+body {
+    margin: 0;
+    padding: 10px;
+    background-color: #ccc;
+    font-family: 'Helvetica';
+}
+
+h1 {
+    text-shadow: 0 -2px 0 #999;
+    text-align: left;
+    font-size: 40px;
+    padding: 0;
+    margin: 50px 0 30px 0;
+    color: #FFF;
+}
+
+/**
+ * Large Button Component
+ * http://components.onsenui.io/
+ */
+.button--large {
+  text-align: center;
+  position: relative;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  margin: 0;
+  font: inherit;
+  background: transparent;
+  font-family: 'Helvetica Neue', Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  cursor: default;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  height: auto;
+  text-decoration: none;
+  letter-spacing: 0;
+  color: #fff;
+  text-shadow: 0 1px none;
+  background-color: #1284ff;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  border: none;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-transition: background-color 0.2s linear, color 0.2s linear, opacity 0.2s linear;
+  -moz-transition: background-color 0.2s linear, color 0.2s linear, opacity 0.2s linear;
+  -o-transition: background-color 0.2s linear, color 0.2s linear, opacity 0.2s linear;
+  transition: background-color 0.2s linear, color 0.2s linear, opacity 0.2s linear;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 36px;
+  padding: 4px 10px;
+  display: block;
+  width: 100%;
+}
+.button--large:active {
+  background-color: #1284ff;
+  color: #fff;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  transition: none;
+  opacity: 0.6;
+}
+.button--large:disabled {
+  opacity: 0.3;
+  cursor: default;
+  pointer-events: none;
+}
+.button--large:hover {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  transition: none;
+}
+.button--large:focus {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  outline: 0;
+}
+
+#hereWrite {
+  font-size: 150% 
+}

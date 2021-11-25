@@ -1,0 +1,216 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <script src="components/loader.js"></script>
+    <link rel="stylesheet" href="components/loader.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+        // API key.
+        var applicationKey    = "91fa4e1cd82bd235f3c67da4a6833f92a8475fb6f682071621df6a10718efe76";
+        var clientKey = "c5a631c7f81e9411911880a744e989d2e548762825da8e5f9f5184e2811a6555";
+        // SDK initialization.
+        var ncmb = new NCMB(applicationKey, clientKey);
+
+        function startDemo() {
+            var TestClass = ncmb.DataStore("TestClass");
+            var testClass = new TestClass();
+            var key   = "petWeight";
+            var value = Math.floor(Math.random() * 7) + 3;
+
+            var testClass2 = new TestClass();
+            var key2 ="newfield";
+            var value2 ="やったね！";
+
+
+            var testClass3 = new TestClass();
+            var key3 ="sendDate";
+            const getSendDate = new Date().toLocaleString({ timeZone: 'Asia/Tokyo' });
+
+            testClass.set(key, value)
+                      .set("newfield", "体重記録あり")
+                      .set(key3, getSendDate);
+            testClass2.set(key2, value2);
+            testClass3.set(key3, getSendDate);
+                      
+            testClass.save()
+            testClass2.save()
+            testClass3.save()
+
+                .then(function(testClass) {
+                    // Save success.
+                    alert("New object created with objectId: " + testClass.objectId);
+                })
+                .catch(function(error) {
+                    // Save failed.
+                    alert("Failed to create new object, with error code: " + error.text);
+                });
+
+            var getObjText = "初期値";
+            var getObjScore = new Array(5);
+            
+            //DBからの取得はncmb.DataStoreで定義する
+            var getObj = ncmb.DataStore("TestClass");
+            getObj.equalTo("message", "こんにちは")
+                    .order("createDate", true) //並び替え指定
+                    .limit(6) //取ってくる値の数
+                    .fetchAll()
+                    //function(results)はJavaScriptの即時関数なのでequalToからcatchの;まで１つの動作
+                    .then(function(results){
+                        getObjText = "Successfully retrieved " + results.length + " scores.";
+
+                        //デバッグ確認用と思いきやここに記述必要っぽい
+                        //getObj外で動かしたい場合はグローバル変数作成して、その変数にここで代入して、getObj外でそのグローバル変数を触る
+                        var importNcmbData = document.getElementById("hereWrite");
+                        importNcmbData.innerHTML = getObjText;
+
+                        //取ってきた値をlength分回して代入
+                        for (var i = 0; i < results.length; i++) {
+                          var object = results[i];
+                          //代入確認用getObjScore.push(object.message);
+                          getObjScore[i] = object.createDate.split('T') + " - " + object.get("message");
+                        }
+
+                        //デバッグ確認用と思いきやここに記述必要っぽい
+                        //getObj外で動かしたい場合はグローバル変数作成して、その変数にここで代入して、getObj外でそのグローバル変数を触る
+                        importNcmbDataArray = document.getElementById("hereShow");
+                        importNcmbDataArray.innerHTML = getObjScore;
+
+                      })
+                    .catch(function(err){
+                        getObjText = "データ取得できませんでしたもしくは該当なし";
+
+                        //デバッグ確認用と思いきやここに記述必要っぽい
+                        //getObj外で動かしたい場合はグローバル変数作成して、その変数にここで代入して、getObj外でそのグローバル変数を触る
+                        var importNcmbData = document.getElementById("hereWrite");
+                        importNcmbData.innerHTML = getObjText;
+                      }); 
+
+
+          //.then(function(results)内に書かないとダメっぽい
+          //ここのを動かすならグローバル変数つくって、その変数にgetObj内で中身を代入しておく
+          //var importNcmbData = document.getElementById("hereWrite");
+          //importNcmbData.innerHTML = getObjText;
+          //var importNcmbDataArray = document.getElementById("hereShow");
+          //if (getObjScore[0] == null) {
+          //importNcmbDataArray.innerHTML = getObjScore;
+          //} else {
+          //importNcmbDataArray.innerHTML ="うまく表示できませんでしたもしくは該当なし";
+          //}
+
+
+
+          //更新（検索で一意に抽出したデータにこんな感じでメモ追加する？equalToの続きで追加する？それとも画面上で日付指定してメモ書いて送信押した瞬間にその日付を検索＆こんな感じでメモ追加する？とすると先に日付選択とメモ画面作成が先？）
+          var testClass4 = new TestClass();
+          testClass4.set("message", "おそよう")
+                    .save() // gameScoreオブジェクトを保存
+                    .then(function(testClass4){
+                      return testClass4.update(); // 保存したgameScoreオブジェクトを更新
+                    })
+                    .then(function(testClass4){
+                      // 更新後の処理
+                      var importNcmbData = document.getElementById("updateGetData");
+                      importNcmbData.innerHTML = "更新成功";
+                      })
+                    .catch(function(err){
+                      // エラー処理
+                      var importNcmbData = document.getElementById("updateGetData");
+                      importNcmbData.innerHTML = "更新失敗";
+                    });
+
+
+
+          var testClass5 = ncmb.DataStore("TestClass");
+          //var testClass6 = ncmb.DataStore("TestClass");
+          testClass5.equalTo("message", "こんにちは")//特定の日時抽出してメモじゃなく（equalToでわざわざ絞らなくてOK）当日から過去30日分データ取ってきてスクロールでメモ見れて、タッチしたら編集できる感じのが使い勝手そんな変わらないし作りやすい
+                      .order("createDate", true) //並び替え指定
+                      //.limit(1) //取ってくる値の数
+                      .fetchAll()
+                      //function(results)はJavaScriptの即時関数なのでequalToからcatchの;まで１つの動作
+                      .then(function(results){
+                        //"Successfully retrieved " + results.length + " scores.";
+
+
+                          //取ってきた値をlength分回して代入
+                          //for (var i = 0; i < results.length; i++) {
+                          //  var object = results[i];
+                          //}
+                          var object = results[0];
+
+                          var getUpShow = document.getElementById("getAndUpdate");
+                          getUpShow.innerHTML = object.message + " - " + object.get("objectId");
+
+                          //取得したデータに文章を追加して更新したい
+                          //var testClass6 = ncmb.DataStore("TestClass");
+                          //testClass6.set("petWeight", "6")
+                          //          .add("cheatMode", "メモを記入!")
+                          //          .save() // オブジェクトを保存
+                          //          .then(function(testClass6){
+                          //            //testClass6.add("cheatMode", "メモを記入!");
+                          //            return testClass6.update();// 保存したオブジェクトを更新
+                          //            })
+                          //          .then(function(testClass6){
+                          //          // 更新後の処理
+                          //            })
+                          //          .catch(function(err){
+                          //          // エラー処理
+                          //          }); 
+
+
+                          //取得したデータを更新してDBに返す（★参照→https://github.com/NIFCLOUD-mbaas/UserCommunity/issues/1223）
+                          //.set("newfield", "ハロハロ")ではなく.addにすると配列としてDBに記録されるので最初の記録がリストの０番目、次の更新はリストの1番目という感じに格納される。リストで以前のデータも保存しなくていい場合は.setで更新するで問題ないかも
+                          object.set("newfield", "ハロハロ")
+                                .update()
+                                //.save()
+                                .then(function(result){
+                                  //return results.update();
+                                      })
+                                      .catch(function(error){
+                                      });
+                        })
+                      .catch(function(err){
+                        var getUpShow = document.getElementById("getAndUpdate");
+                        getUpShow.innerHTML = "取得・更新できませんでした";
+                          
+                        }); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        }
+
+    </script>
+</head>
+
+<body>
+    <h1>NIFCLOUD<br>mobile backend!</h1>
+    <a class="button--large" onclick="startDemo()">Start Demo</a><br>
+    <div>Touch Start Demo to save {"message":"Hello, NCMB!"} to mobile backend.</div>
+    <div id="hereWrite">ここに表示したいよね</div>
+    <div id="hereShow">ここに取得したデータ表示したいよね</div>
+    <div id="updateGetData">データ更新したいよね</div>
+    <div id="getAndUpdate">データ取得して更新したいよね</div>
+    
+    
+</body>
+</html>
